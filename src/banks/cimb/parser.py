@@ -8,10 +8,17 @@ NUMBER_PATTERN = r"^\d+(?:,\d{3})*\.\d{2}$"
 def is_amount(line):
     return re.match(NUMBER_PATTERN, line) is not None
 
-def parse_transactions(blocks):
+def parse_transactions(blocks, opening_balance = None):
 
     transactions = []
-    previous_balance = None
+    previous_balance = opening_balance
+
+    if opening_balance is not None:
+        opening_transaction = Transaction()
+        opening_transaction.header = "OPENING BALANCE"
+        opening_transaction.balance = opening_balance
+
+        transactions.append(opening_transaction)
 
     for block in blocks:
 
@@ -57,15 +64,18 @@ def parse_transaction(transaction_block):
         else: 
             transaction.description_lines.append(line)
 
-    
     #temporary
     transaction.balance = amount_lines[1]
-    balance = amount_lines[1]
-
-    print("DESC:", transaction.description_lines)
-    print("AMOUNTS:", amount_lines)
 
     return transaction
+
+def extract_opening_balance(lines):
+    for index, line in enumerate(lines):
+        if line == "OPENING BALANCE":
+            amount = extract_amount(lines[index + 1])
+            return amount
+
+    return None
 
 
 def extract_amount(line):
