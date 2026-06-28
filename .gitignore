@@ -32,6 +32,7 @@ parsed_transaction.txt
 
 # Local test data
 data/
+src/test_parser.py
 
 # Local samples - private info
 samples/
