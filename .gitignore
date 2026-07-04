@@ -37,3 +37,6 @@ output.txt
 
 # Local samples - private info
 samples/
+
+# Local export documents
+exports/

@@ -1,5 +1,7 @@
 from pdf_reader import read_pdf
 
+from importers.folder_importer import get_pdf_files
+
 from banks.cimb.cleaner import clean_lines
 from banks.cimb.splitter import split_transactions
 from banks.cimb.parser import parse_transactions, extract_opening_balance
@@ -12,25 +14,37 @@ from reporters.validation_reporter import print_validation_results
 
 def main():
 
-    text = read_pdf("samples/cimb/eStatementJan26.pdf")
+    folder_path = "samples/cimb"
 
-    lines = clean_lines(text)
+    pdf_files = get_pdf_files(folder_path)
 
-    blocks = split_transactions(lines)
+    all_transactions = []
 
-    opening_balance = extract_opening_balance(lines)
+    for pdf_path in pdf_files:
 
-    transactions = parse_transactions(blocks, opening_balance)
+        print(f"Processing {pdf_path.name}")
 
-    errors, warnings = validate_transactions(transactions)
+        text = read_pdf(pdf_path)
 
-    print_validation_results(errors, warnings)
+        lines = clean_lines(text)
 
-    if not errors:
-        export_transactions_text(transactions)
-        export_transactions_csv(transactions)
+        blocks = split_transactions(lines)
 
-    print (f"Parsed {len(transactions)} transactions.")
+        opening_balance = extract_opening_balance(lines)
+
+        transactions = parse_transactions(blocks, opening_balance)
+
+        errors, warnings = validate_transactions(transactions)
+
+        print_validation_results(errors, warnings)
+
+        all_transactions.extend(transactions)
+
+        if not errors:
+            export_transactions_text(transactions, filename=f"{pdf_path.stem}.txt")
+            export_transactions_csv(transactions, filename=f"{pdf_path.stem}.csv")
+
+        print (f"Parsed {len(transactions)} transactions.")
 
 if __name__ == "__main__":
     main()

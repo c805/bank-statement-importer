@@ -1,5 +1,12 @@
+from pathlib import Path
+
+EXPORT_DIR = Path("exports")
+EXPORT_DIR.mkdir(exist_ok=True)
+
 def export_transactions_text(transactions, filename="parsed_transaction.txt"):
-    with open(filename, "w", encoding="utf-8") as output:
+    file_path = EXPORT_DIR / filename
+    
+    with open(file_path, "w", encoding="utf-8") as output:
 
         for i, transaction in enumerate(transactions, start=1):
 
