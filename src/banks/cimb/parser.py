@@ -2,11 +2,10 @@ import re
 
 from models.transaction import Transaction
 
-NUMBER_PATTERN = r"^\d+(?:,\d{3})*\.\d{2}$"
-
-
-def is_amount(line):
-    return re.match(NUMBER_PATTERN, line) is not None
+from utils.parsing import (
+    is_amount,
+    extract_amount
+)
 
 def parse_transactions(blocks, opening_balance = None):
 
@@ -76,11 +75,3 @@ def extract_opening_balance(lines):
             return amount
 
     return None
-
-
-def extract_amount(line):
-    match = re.search(r"\d+(?:,\d{3})*\.\d{2}", line)
-    if not match:
-        return None
-
-    return float(match.group().replace(",", ""))
