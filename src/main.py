@@ -22,9 +22,9 @@ def main():
 
     transactions = parse_transactions(blocks, opening_balance)
 
-    errors, warnings = validate_transactions (transactions)
+    errors, warnings = validate_transactions(transactions)
 
-    print_validation_results(errors,warnings)
+    print_validation_results(errors, warnings)
 
     if not errors:
         export_transactions_text(transactions)

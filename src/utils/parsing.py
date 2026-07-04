@@ -7,6 +7,7 @@ def is_amount(line):
     """Return True if the line contains only a monetary amount."""
     return re.match(NUMBER_PATTERN, line) is not None
 
+
 def extract_amount(line):
     """Extract the first monetary amount from a line as a float."""
 
