@@ -1,8 +1,8 @@
 import re
 
-from models.transaction import Transaction
+from src.models.transaction import Transaction
 
-from utils.parsing import (
+from src.utils.parsing import (
     is_amount,
     extract_amount
 )

@@ -1,10 +1,14 @@
 from pathlib import Path
 
-EXPORT_DIR = Path("exports")
-EXPORT_DIR.mkdir(exist_ok=True)
+def ensure_export_dir(path: Path):
+    path.mkdir(parents=True, exist_ok=True)
 
-def export_transactions_text(transactions, filename="parsed_transaction.txt"):
-    file_path = EXPORT_DIR / filename
+def export_transactions_text(transactions, output_dir = "exports", filename="parsed_transaction.txt"):
+    
+    output_dir = Path(output_dir)
+    ensure_export_dir(output_dir)
+
+    file_path = output_dir / filename
     
     with open(file_path, "w", encoding="utf-8") as output:
 

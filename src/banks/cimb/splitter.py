@@ -1,6 +1,6 @@
 import re
 
-from utils.parsing import is_amount
+from src.utils.parsing import is_amount
 
 DATE_PATTERN = r"^\d{2}/\d{2}/\d{4}\s+.+"
 

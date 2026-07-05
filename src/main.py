@@ -1,20 +1,20 @@
-from pdf_reader import read_pdf
+from src.importers.folder_importer import get_pdf_files
 
-from importers.folder_importer import get_pdf_files
+from src.exporters.text_exporter import export_transactions_text
+from src.exporters.csv_exporter import export_transactions_csv
 
-from banks.cimb.cleaner import clean_lines
-from banks.cimb.splitter import split_transactions
-from banks.cimb.parser import parse_transactions, extract_opening_balance
+from src.reporters.validation_reporter import print_validation_results
 
-from exporters.text_exporter import export_transactions_text
-from exporters.csv_exporter import export_transactions_csv
-
-from validators.transaction_validator import validate_transactions
-from reporters.validation_reporter import print_validation_results
+from src.services.import_pipeline import process_pdf
 
 def main():
 
     folder_path = "samples/cimb"
+
+    export_path = input("Enter export folder (default=exports): ").strip()
+
+    if not export_path:
+        export_path =  "exports"
 
     pdf_files = get_pdf_files(folder_path)
 
@@ -24,25 +24,15 @@ def main():
 
         print(f"Processing {pdf_path.name}")
 
-        text = read_pdf(pdf_path)
-
-        lines = clean_lines(text)
-
-        blocks = split_transactions(lines)
-
-        opening_balance = extract_opening_balance(lines)
-
-        transactions = parse_transactions(blocks, opening_balance)
-
-        errors, warnings = validate_transactions(transactions)
+        transactions, errors, warnings = process_pdf(pdf_path)
 
         print_validation_results(errors, warnings)
 
         all_transactions.extend(transactions)
 
         if not errors:
-            export_transactions_text(transactions, filename=f"{pdf_path.stem}.txt")
-            export_transactions_csv(transactions, filename=f"{pdf_path.stem}.csv")
+            export_transactions_text(transactions, output_dir = export_path, filename=f"{pdf_path.stem}.txt")
+            export_transactions_csv(transactions, output_dir = export_path, filename=f"{pdf_path.stem}.csv")
 
         print (f"Parsed {len(transactions)} transactions.")
 
